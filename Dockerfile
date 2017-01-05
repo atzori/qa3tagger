@@ -19,8 +19,11 @@ RUN	wget -O qbench2datasets.zip "http://linkedspending.aksw.org/extensions/page/
 	python -c "import webserver" && \
 	cd benchmarkdatasets && \
 	echo "cleaning dataset to save space" && \
-	(ls -1 | xargs -n1 cp /dev/null) && \
+	(for file in *; do cp /dev/null "$file"; done) && \
 	cd ..
+
+# alternatively (dangerous because of ls):
+# 	(ls -1 | xargs -n1 cp /dev/null) && \
 
 # this will not work properly; files should be keeped and emptied instead, with ls / xargs
 # rm -rf benchmarkdatasets/ 
