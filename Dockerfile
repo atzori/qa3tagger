@@ -18,6 +18,6 @@ RUN wget -O qbench2datasets.zip "http://linkedspending.aksw.org/extensions/page/
 # without running the main app
 RUN python -c "import webserver"
 
-RUN rm -rf benchmarkdatasets/
+#RUN rm -rf benchmarkdatasets/ # this will not work properly; files should be keeped and emptied instead
 
 CMD ["python","webserver.py"]
