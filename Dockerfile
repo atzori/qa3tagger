@@ -5,19 +5,23 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 
-RUN apt-get update && apt-get install -y unzip wget
+# download file and reduce files at the end
 
-RUN	pip install --no-cache-dir -r requirements.txt && \
-    python -m nltk.downloader stopwords punkt wordnet
-
-RUN wget -O qbench2datasets.zip "http://linkedspending.aksw.org/extensions/page/page/export/qbench2datasets.zip" && \
-	unzip qbench2datasets.zip && \
-	rm qbench2datasets.zip
-
-# elaborates datasets and cache results in ./memoize_to_disk/*.pkl
+# "python -c" elaborates datasets and cache results in ./memoize_to_disk/*.pkl
 # without running the main app
-RUN python -c "import webserver"
 
-#RUN rm -rf benchmarkdatasets/ # this will not work properly; files should be keeped and emptied instead
+RUN apt-get update && apt-get install -y unzip wget && \
+	wget -O qbench2datasets.zip "http://linkedspending.aksw.org/extensions/page/page/export/qbench2datasets.zip" && \
+	unzip qbench2datasets.zip && \
+	rm qbench2datasets.zip && \
+	pip install --no-cache-dir -r requirements.txt && \
+    python -m nltk.downloader stopwords punkt wordnet && \
+	python -c "import webserver" && \
+	cd benchmarkdatasets && \
+	ls -1 | xargs -n1 tee && \
+	cd ..
+
+# this will not work properly; files should be keeped and emptied instead, with ls / xargs
+# rm -rf benchmarkdatasets/ 
 
 CMD ["python","webserver.py"]
