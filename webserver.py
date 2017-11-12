@@ -81,7 +81,8 @@ def evaluate_res(res, question):
 
 	print '\n\nFINAL RESULTS'
 	results = final[question]
-	results = sorted(results, key=lambda e: e[1])
+	results = sorted(results, key=lambda e: e[0], reverse=True) # sort by name
+	results = sorted(results, key=lambda e: e[1]) # then by value
 	best = [r for r in results[:10]]
 	#print '\n', 'OK' if best3[0][0]==correct_dataset else 'MISTAKE', results[:3]
 	if not print_tag4max:
@@ -111,11 +112,13 @@ def evaluate_res(res, question):
 		chosen_dataset = best[0][0]
 		print question
 		print chosen_dataset #correct_dataset +'\t'+ chosen_dataset
+		print best
 		for tagged_q in res[question]:
 			if tagged_q.tagdata[0] == chosen_dataset:
 				#print tagged_q.render(html=False)
 				#display(HTML(tagged_q.render(html=True)))
-				return {'question': question, 'dataset': chosen_dataset, 'result': tagged_q.render(html=False)}
+				candidates = [best[i][0] for i in range(len(best)) if best[0][1] >= best[i][1]-0.8]
+				return {'question': question, 'dataset': chosen_dataset, 'result': tagged_q.render(html=False), 'candidates':candidates}
 	return {'msg':'computed'}
 
 
